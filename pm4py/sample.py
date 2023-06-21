@@ -6,6 +6,9 @@ file_csv = './pm4py/assets/running-example.csv'
 file_xes = './pm4py/assets/public/Sepsis_log.xes'
 output_dir = './pm4py/outputs'
 
+view = False
+save = True
+
 
 def import_csv(file_path):
     event_log = pandas.read_csv(file_path, sep=';')
@@ -42,43 +45,53 @@ def get_df_from_xes():
 
 def inductive(df):
     process_tree = pm4py.discover_process_tree_inductive(df)
-    pm4py.save_vis_heuristics_net(
-        heu_net, f'{output_dir}/ptree-inductive.png')
-    pm4py.view_process_tree(process_tree)
+    if save:
+        pm4py.save_vis_heuristics_net(
+            heu_net, f'{output_dir}/ptree-inductive.png')
+    if view:
+        pm4py.view_process_tree(process_tree)
     view_bpmn('inductive', process_tree)
     return process_tree
 
 
 def heuristic(df):
     heu_net = pm4py.discover_heuristics_net(df)
-    pm4py.save_vis_heuristics_net(
-        heu_net, f'{output_dir}/net-heuristics.png')
-    pm4py.view_heuristics_net(heu_net)
+    if save:
+        pm4py.save_vis_heuristics_net(
+            heu_net, f'{output_dir}/net-heuristics.png')
+    if view:
+        pm4py.view_heuristics_net(heu_net)
     return heu_net
 
 
 def petri_heuristic(df):
     petri_net, im, fm = pm4py.discover_petri_net_heuristics(df)
-    pm4py.save_vis_petri_net(
-        petri_net, im, fm, f'{output_dir}/petri-heuristics.png')
-    pm4py.view_petri_net(petri_net, im, fm)
+    if save:
+        pm4py.save_vis_petri_net(
+            petri_net, im, fm, f'{output_dir}/petri-heuristics.png')
+    if view:
+        pm4py.view_petri_net(petri_net, im, fm)
     view_bpmn('heuristic', petri_net, im, fm)
     return petri_net, im, fm
 
 
 def alpha(df):
     petri_net, im, fm = pm4py.discover_petri_net_alpha_plus(df)
-    pm4py.save_vis_petri_net(
-        petri_net, im, fm, f'{output_dir}/petri-alpha.png')
-    pm4py.view_petri_net(petri_net, im, fm)
+    if save:
+        pm4py.save_vis_petri_net(
+            petri_net, im, fm, f'{output_dir}/petri-alpha.png')
+    if view:
+        pm4py.view_petri_net(petri_net, im, fm)
     view_bpmn('alpha', petri_net, im, fm)
     return petri_net, im, fm
 
 
 def view_bpmn(title, *args):
     bpmn_model = pm4py.convert_to_bpmn(*args)
-    pm4py.save_vis_bpmn(bpmn_model, f'{output_dir}/bpmn-{title}.png')
-    pm4py.view_bpmn(bpmn_model)
+    if save:
+        pm4py.save_vis_bpmn(bpmn_model, f'{output_dir}/bpmn-{title}.png')
+    if view:
+        pm4py.view_bpmn(bpmn_model)
 
 
 if __name__ == "__main__":
